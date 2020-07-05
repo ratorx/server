@@ -14,8 +14,9 @@ services:
   syncthing:
     build: ./syncthing
     restart: unless-stopped
-    ports:
+    expose:
       - "8384"
+    ports:
       - "22000:22000"
       - "21027:21027/udp"
     volumes:
