@@ -1,0 +1,2 @@
+internal_borgmatic_config_directory: /etc/borgmatic
+internal_backup_time: 04:00

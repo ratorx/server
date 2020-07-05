@@ -1,0 +1,22 @@
+#! /usr/bin/ansible-playbook
+- hosts: all
+  become: true
+  vars:
+    ssh_ca_private_key_path: ~/.ssh/ca/ssh_ca
+    ssh_ca_public_key_path: "{{ ssh_ca_private_key_path }}.pub"
+    docker_client_ca_cert_path: ~/.config/docker/ca/ca.pem
+    server_email: "server+{{ inventory_hostname_short }}@{{ '.'.join(inventory_hostname.split('.')[-2:]) }}"
+  roles:
+    # Basic system configuration
+    - create_ansible_user
+    - setup_automatic_updates
+    - increase_max_user_watches
+    # Backups
+    - borgmatic
+    # Server authentication
+    - trust_ssh_ca
+    - sign_host_keys
+    - secure_access
+    # System dependencies
+    - certbot
+    - docker

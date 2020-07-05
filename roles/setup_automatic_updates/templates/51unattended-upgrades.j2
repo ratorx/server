@@ -1,0 +1,10 @@
+Unattended-Upgrade::Mail "{{ server_email }}";
+Unattended-Upgrade::MailOnlyOnError "false";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Automatic-Reboot-WithUsers "false";
+Unattended-Upgrade::Automatic-Reboot-Time "{{ internal_server_restart_time }}";
+
+Unattended-Upgrade::Origins-Pattern {
+  *:*;
+}

@@ -1,0 +1,11 @@
+- name: upload CA public key
+  copy:
+    src: "{{ ssh_ca_public_key_path }}"
+    dest: "{{ internal_trusted_ca_path }}"
+
+- name: add CA as TrustedUserCAKey
+  lineinfile:
+    dest: "{{ internal_config_path }}"
+    line: "TrustedUserCAKeys {{  internal_trusted_ca_path }}"
+    state: present
+  notify: restart sshd

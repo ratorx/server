@@ -1,0 +1,37 @@
+# install.yml
+- import_tasks: install.yml
+
+- name: create certbot configuration directory
+  file:
+    path: "{{ internal_certbot_config_directory }}"
+    state: directory
+    recurse: true
+
+- name: configure certbot
+  template:
+    src: cli.ini.j2
+    dest: "{{ internal_certbot_config_path }}"
+
+- name: configure cloudflare API token
+  template:
+    src: cloudflare.ini.j2
+    dest: "{{ internal_cloudflare_config_path }}"
+    mode: 0600
+
+- name: generate a certificate
+  command: "certbot certonly --non-interactive -d {{ inventory_hostname }}"
+  args:
+    creates: "/etc/letsencrypt/live/{{ inventory_hostname }}"
+
+- name: create symlink for default certificates
+  file:
+    path: /etc/letsencrypt/live/default
+    src: "{{ inventory_hostname }}"
+    state: link
+    follow: false
+
+- name: enable certbot renewal timer
+  systemd:
+    name: certbot.timer
+    state: started
+    enabled: true

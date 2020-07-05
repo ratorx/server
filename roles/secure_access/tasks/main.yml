@@ -1,0 +1,32 @@
+- name: lock root
+  user:
+    name: root
+    password_lock: true
+    password: "!"
+    shell: "/bin/bash"
+  become: true
+- name: disable password login via SSH
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PasswordAuthentication "
+    line: "PasswordAuthentication no"
+  become: true
+  notify: restart sshd
+- name: disable login to root via SSH
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^PermitRootLogin "
+    line: "PermitRootLogin no"
+  become: true
+  notify: restart sshd
+- name: enable PAM
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "^UsePAM"
+    line: "UsePAM yes"
+  become: true
+  notify: restart sshd
+- name: remove root authorized_keys
+  file:
+    path: /root/.ssh/authorized_keys
+    state: absent

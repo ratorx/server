@@ -1,0 +1,40 @@
+version: "3"
+services:
+  murmur:
+    build: ./murmur
+    restart: unless-stopped
+    ports:
+      - "1337:64738"
+      - "1337:64738/udp"
+    volumes:
+      - /etc/letsencrypt:/data/certs:ro
+      - /data/murmur:/data/db:rw
+
+  # TODO: Update to upstream syncthing/syncthing:latest on next release.
+  syncthing:
+    build: ./syncthing
+    restart: unless-stopped
+    ports:
+      - "8384"
+      - "22000:22000"
+      - "21027:21027/udp"
+    volumes:
+      - /data/syncthing:/var/syncthing:rw
+
+  caddy:
+    build: ./caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_cache:/data:rw
+      - /etc/letsencrypt:/certs:ro
+      - /data/syncthing:/usr/share/caddy:ro
+    environment:
+      - CADDY_ADMIN_USER_PASSWORD_HASH
+      - CADDY_ADMIN_USER_SALT
+    depends_on:
+      - syncthing
+volumes:
+  caddy_cache:

@@ -1,0 +1,9 @@
+{
+  "tlsverify": true,
+  "tlscacert": "/etc/docker/ca.pem",
+
+  "tlscert": "/etc/letsencrypt/live/{{ inventory_hostname }}/fullchain.pem",
+  "tlskey": "/etc/letsencrypt/live/{{ inventory_hostname }}/privkey.pem",
+
+  "hosts": ["unix:///var/run/docker.sock", "tcp://{{ inventory_hostname }}:{{ internal_docker_port }}"]
+}

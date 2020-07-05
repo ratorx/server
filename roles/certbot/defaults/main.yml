@@ -1,0 +1,3 @@
+internal_certbot_config_directory: /etc/letsencrypt
+internal_certbot_config_path: "{{ internal_certbot_config_directory }}/cli.ini"
+internal_cloudflare_config_path: "{{ internal_certbot_config_directory }}/cloudflare.ini"

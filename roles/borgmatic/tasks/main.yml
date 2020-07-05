@@ -1,0 +1,53 @@
+- name: install borgmatic
+  apt:
+    pkg:
+      - borgmatic
+    state: present
+
+- name: update borgmatic to use testing repo
+  apt:
+    pkg:
+      - borgmatic
+    default_release: testing
+    update_cache: true
+    state: latest
+
+- name: create config directory
+  file:
+    path: "{{ internal_borgmatic_config_directory }}"
+    state: directory
+    mode: 0700
+
+- name: create config for borgmatic
+  template:
+    src: borgmatic.yml
+    dest: "{{ internal_borgmatic_config_directory }}/config.yaml"
+    mode: 0600
+
+- name: create fail script
+  copy:
+    src: fail.sh
+    dest: "{{ internal_borgmatic_config_directory }}"
+    mode: 0500
+
+- name: setup borgmatic systemd service
+  copy:
+    src: borgmatic.service
+    dest: /etc/systemd/system
+
+- name: setup borgmatic systemd timer
+  template:
+    src: borgmatic.timer
+    dest: /etc/systemd/system
+
+- name: enable borgmatic timer
+  systemd:
+    name: borgmatic.timer
+    daemon_reload: true
+    enabled: true
+    state: started
+
+- name: restore from backup
+  command: borgmatic extract --archive latest --destination /
+  args:
+    creates: /data/.beacon

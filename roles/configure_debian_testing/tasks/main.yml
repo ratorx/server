@@ -1,0 +1,9 @@
+- name: enable debian testing repository
+  apt_repository:
+    repo: deb http://deb.debian.org/debian testing main
+    state: present
+
+- name: prefer stable packages to testing packages
+  copy:
+    src: prefer_stable.pref
+    dest: /etc/apt/preferences.d

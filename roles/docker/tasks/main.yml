@@ -1,0 +1,33 @@
+- import_tasks: install.yml
+
+- name: create docker config directory
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: upload CA cert to verify clients
+  copy:
+    src: "{{ docker_client_ca_cert_path }}"
+    dest: /etc/docker
+
+- name: configure docker
+  template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+
+- name: create systemd override config directory for docker
+  file:
+    path: /etc/systemd/system/docker.service.d
+    state: directory
+
+- name: override docker.service to use hosts specified in daemon.json
+  copy:
+    src: override.conf
+    dest: /etc/systemd/system/docker.service.d
+
+- name: reload systemd
+  systemd:
+    name: docker
+    daemon_reload: true
+    state: started
+    enabled: true

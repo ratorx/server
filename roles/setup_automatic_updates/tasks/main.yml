@@ -1,0 +1,53 @@
+- name: install unattended-upgrades and apt-listchanges
+  apt:
+    pkg:
+      - unattended-upgrades
+      - apt-listchanges
+    state: present
+
+- name: enable automatic updates
+  lineinfile:
+    create: true
+    line: 'APT::Periodic::Enable "1";'
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: "^APT::Periodic::Enable"
+
+- name: perform automatic updates every day
+  lineinfile:
+    create: true
+    line: 'APT::Periodic::Unattended-Upgrade "1";'
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: "^APT::Periodic::Unattended-Upgrade"
+
+- name: update package lists every day
+  lineinfile:
+    create: true
+    line: 'APT::Periodic::Update-Package-Lists "1";'
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: "^APT::Periodic::Update-Package-Lists"
+
+- name: download packages every day
+  lineinfile:
+    create: true
+    line: 'APT::Periodic::Download-Upgradeable-Packages "1";'
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: "^APT::Periodic::Download-Upgradeable-Packages"
+
+- name: autoclean packages every week
+  lineinfile:
+    create: true
+    line: 'APT::Periodic::AutocleanInterval "7";'
+    path: /etc/apt/apt.conf.d/20auto-upgrades
+    regexp: "^APT::Periodic::AutocleanInterval"
+
+- name: "configure unattended-upgrades"
+  template:
+    src: 51unattended-upgrades.j2
+    dest: /etc/apt/apt.conf.d/51unattended-upgrades-user
+
+- name: "email {{ server_email }} with changed packages"
+  lineinfile:
+    create: true
+    line: "email_address={{ server_email }}"
+    path: /etc/apt/listchanges.conf
+    regexp: "^email_address="

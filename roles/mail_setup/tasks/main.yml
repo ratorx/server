@@ -1,0 +1,62 @@
+- name: install exim4 and bsd-mailx
+  apt:
+    pkg:
+      - exim4
+      - bsd-mailx
+    state: present
+
+- name: configure exim4/dc_minimaldns
+  debconf:
+    name: exim4-config
+    question: exim4/dc_minimaldns
+    value: "false"
+    vtype: boolean
+  notify: reconfigure exim4
+
+- name: configure exim4/dc_other_hostnames
+  debconf:
+    name: exim4-config
+    question: exim4/dc_other_hostnames
+    value: "{{ inventory_hostname_short }}"
+    vtype: string
+  notify: reconfigure exim4
+
+- name: configure exim4/use_split_config
+  debconf:
+    name: exim4-config
+    question: exim4/use_split_config
+    value: "false"
+    vtype: boolean
+  notify: reconfigure exim4
+
+- name: configure exim4/mailname
+  debconf:
+    name: exim4-config
+    question: exim4/mailname
+    value: "{{ inventory_hostname }}"
+    vtype: string
+  notify: reconfigure exim4
+
+- name: configure exim4/dc_local_interfaces
+  debconf:
+    name: exim4-config
+    question: exim4/dc_local_interfaces
+    value: 127.0.0.1 ; ::1
+    vtype: string
+  notify: reconfigure exim4
+
+- name: configure exim4/dc_localdelivery
+  debconf:
+    name: exim4-config
+    question: exim4/dc_localdelivery
+    value: mbox format in /var/mail/
+    vtype: select
+  notify: reconfigure exim4
+
+- name: configure exim4/dc_eximconfig_configtype
+  debconf:
+    name: exim4-config
+    question: exim4/dc_eximconfig_configtype
+    value: internet site; mail is sent and received directly using SMTP
+    vtype: select
+  notify: reconfigure exim4

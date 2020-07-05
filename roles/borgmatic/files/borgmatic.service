@@ -1,0 +1,10 @@
+[Unit]
+Description=Run a borgmatic backup
+Documentation=man:borgmatic(1)
+ConditionACPower=true
+After=network.target network-online.target systemd-networkd.service NetworkManager.service connman.service
+
+[Service]
+Type=oneshot
+ExecStartPre=-/usr/lib/apt/apt-helper wait-online
+ExecStart=borgmatic --verbosity 1

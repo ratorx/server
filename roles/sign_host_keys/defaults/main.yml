@@ -1,0 +1,4 @@
+internal_host_key_directory: /etc/ssh
+internal_config_path: "{{ internal_host_key_directory }}/sshd_config"
+internal_allowed_hostnames: "{{ inventory_hostname }},{{ inventory_hostname_short }}"
+internal_id: "{{ inventory_hostname }}"

@@ -1,0 +1,26 @@
+location:
+  source_directories:
+    - /data
+
+  repositories:
+    - "{{ backup_user }}@{{ backup_host }}:backups/{{ inventory_hostname }}.borg"
+
+storage:
+  encryption_passphrase: "{{ backup_passphrase }}"
+  compression: lz4
+
+retention:
+  keep_daily: 7
+  keep_weekly: 2
+  keep_monthly: 3
+  keep_yearly: 0
+
+hooks:
+  before_backup:
+    - systemctl stop docker
+
+  after_backup:
+    - systemctl start docker
+
+  on_error:
+    - "{{ internal_borgmatic_config_directory }}/fail.sh {{ server_email }}"

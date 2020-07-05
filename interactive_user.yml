@@ -1,0 +1,40 @@
+- hosts: all
+  become: true
+  gather_facts: false
+  vars_prompt:
+    - name: interactive_password_hash
+      prompt: "interactive user password"
+      private: true
+      encrypt: "sha512_crypt"
+      confirm: true
+      salt_size: 8
+  vars:
+    username: "{{ lookup('env', 'USER') }}"
+  tasks:
+    - name: create group wheel
+      group:
+        name: sudo
+        state: present
+
+    - name: allow group sudo to use sudo
+      lineinfile:
+        dest: /etc/sudoers
+        regexp: "^%sudo"
+        line: "%sudo ALL=(ALL) ALL"
+        validate: "visudo -cf %s"
+        state: present
+
+    - name: create docker group
+      group:
+        name: docker
+        state: present
+
+    - name: create interactive user {{ username }}
+      user:
+        append: true
+        groups:
+          - sudo
+          - docker
+        name: "{{ username }}"
+        password: "{{ interactive_password_hash }}"
+        shell: "/bin/bash"

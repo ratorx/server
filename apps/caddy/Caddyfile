@@ -1,0 +1,41 @@
+{
+  auto_https off
+}
+
+(auth) {
+  basicauth {args.0} {
+   admin {$CADDY_ADMIN_USER_PASSWORD_HASH} {$CADDY_ADMIN_USER_SALT}
+  }
+}
+
+(app) {
+  # Add trailing slash to all backend communication
+  redir /app/{args.0} /app/{args.0}/
+  handle_path /app/{args.0}/* {
+    reverse_proxy {args.1}
+  }
+}
+
+https:// {
+  tls /certs/live/default/fullchain.pem /certs/live/default/privkey.pem
+  encode gzip
+  log {
+    format logfmt
+  }
+
+  # Require authentication for all resources
+  import auth /*
+
+  # Syncthing Admin UI
+  import app syncthing syncthing:8384
+  
+  root * /usr/share/caddy
+  file_server * browse {
+    hide apps* config* *stfolder* *.git* *node_modules*
+  }
+
+}
+
+http:// {
+  redir https://{http.request.host}{http.request.uri} permanent
+}

@@ -1,0 +1,14 @@
+- name: create remote user for ansible
+  user:
+    name: "{{ internal_username }}"
+    comment: Ansible System User
+    password_lock: true
+    password: "!"
+    shell: "/bin/bash"
+- name: allow remote user to use passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^{{ internal_username }}"
+    line: "{{ internal_username }} ALL=(ALL) NOPASSWD: ALL"
+    validate: "visudo -cf %s"

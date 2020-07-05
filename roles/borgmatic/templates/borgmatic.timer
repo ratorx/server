@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily backup with borgmatic
+
+[Timer]
+OnCalendar=*-*-* {{ internal_backup_time }}
+RandomizedDelaySec=15m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
