@@ -1,0 +1,33 @@
+- name: install ufw
+  apt:
+    pkg:
+      - ufw
+    state: present
+
+- name: upload custom application configs
+  copy:
+    src: custom
+    dest: /etc/ufw/applications.d
+
+- name: allow ports for application
+  ufw:
+    rule: allow
+    name: "{{ item }}"
+  with_items:
+    - OpenSSH
+    - DHCP
+    - Docker
+    - Murmur
+    - Syncthing
+    - WWW Full
+  notify: reload ufw
+
+- name: enable ufw logging
+  ufw:
+    logging: low
+
+- name: lock down all ports by default
+  ufw:
+    default: reject
+    direction: incoming
+    state: enabled

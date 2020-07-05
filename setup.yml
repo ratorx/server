@@ -11,6 +11,7 @@
     - create_ansible_user
     - setup_automatic_updates
     - increase_max_user_watches
+    - ufw
     # Backups
     - borgmatic
     # Server authentication
