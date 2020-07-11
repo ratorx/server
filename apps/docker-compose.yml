@@ -10,9 +10,8 @@ services:
       - /etc/letsencrypt:/data/certs:ro
       - /data/murmur:/data/db:rw
 
-  # TODO: Update to upstream syncthing/syncthing:latest on next release.
   syncthing:
-    build: ./syncthing
+    image: syncthing/syncthing:latest
     restart: unless-stopped
     expose:
       - "8384"

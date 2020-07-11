@@ -31,9 +31,9 @@ At a high level, it performs the following actions:
 ### Hacks, workarounds and manual intervention
 
 - A few packages (certbot* and borgmatic*) in Debian stable are not recent enough for required features. These applications are provisioned from Debian testing.
-- Accessing the remote Docker daemon requires a CA cert despite using system CA signed certs on the remote end. Either the concatenated default cert store or just `/etc/ssl/certs/DST_Root_CA_X3.pem` needs to provided as the CA. The issue of automatically using default certs in tracked in [docker/cli#2468](https://github.com/docker/cli/issues/2468).
+- Accessing the remote Docker daemon requires a CA cert despite using system CA signed certs on the remote end. Either the concatenated default cert store or just `/etc/ssl/certs/DST_Root_CA_X3.pem` needs to provided as the CA. The issue of automatically using default certs is tracked in [docker/cli#2468](https://github.com/docker/cli/issues/2468).
 - Manual intervention required for configuring automatic backups - root needs SSH access to the backup host. The current backup host doesn't support SSH CA authentication, so this cannot be automated easily.
-  - Possibly can rely on ansible controller having access to backup host (generate and copy public key to controller and then add key to backup host).
+  - Possibly can rely on Ansible controller having access to backup host (generate and copy public key to controller and then add key to backup host).
   - Alternatively could use a blessed root SSH key that has preconfigured access to backup host.
 
 ## Application deployment
