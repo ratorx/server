@@ -18,7 +18,10 @@ bootstrap:
 	$(ANSIBLE-PLAYBOOK) -e 'ansible_ssh_user=root' setup.yml
 
 setup:
-	$(ANSIBLE-PLAYBOOK) setup.yml
+	$(ANSIBLE-PLAYBOOK) --skip-tags "private_ca" setup.yml
+
+setup_private_ca:
+	$(ANSIBLE-PLAYBOOK) --tags "private_ca" setup.yml
 
 interactive_user:
 	$(ANSIBLE-PLAYBOOK) interactive_user.yml

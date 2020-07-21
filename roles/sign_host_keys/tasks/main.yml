@@ -4,6 +4,7 @@
     pattern: ssh_host_*_key
   register: private_keys
   failed_when: '"matched" not in private_keys or private_keys.matched == 0'
+  tags: private_ca
 
 - name: create temporary local directory
   tempfile:
@@ -13,6 +14,7 @@
   become: false
   delegate_to: localhost
   register: temporary_directory
+  tags: private_ca
 
 - name: fetch public host keys
   fetch:
@@ -20,6 +22,7 @@
     dest: "{{ temporary_directory.path }}/public_keys/"
   with_items: "{{ private_keys.files }}"
   changed_when: false
+  tags: private_ca
 
 - name: fetch existing certificates
   fetch:
@@ -28,6 +31,7 @@
     fail_on_missing: false
   with_items: "{{ private_keys.files }}"
   changed_when: false
+  tags: private_ca
 
 - name: sign public host keys
   command: ssh-keygen -s {{ ssh_ca_private_key_path | quote }} -I {{ internal_id | quote }} -h -n {{ internal_allowed_hostnames | quote }} {{ temporary_directory.path }}/public_keys/{{ inventory_hostname | quote }}{{ item.path | quote }}.pub
@@ -35,6 +39,7 @@
   delegate_to: localhost
   become: false
   changed_when: false
+  tags: private_ca
 
 - name: find generated certificates
   find:
@@ -43,6 +48,7 @@
   delegate_to: localhost
   become: false
   register: certificates
+  tags: private_ca
 
 - name: diff generated certificates with existing certificates
   shell:
@@ -53,6 +59,7 @@
   failed_when: false
   become: false
   register: certificate_comparison
+  tags: private_ca
 
 - name: upload changed certificates
   copy:
@@ -61,6 +68,7 @@
   when: item.rc != 0
   with_items: "{{ certificate_comparison.results }}"
   notify: restart sshd
+  tags: private_ca
 
 - name: delete temporary local directory
   file:
@@ -68,6 +76,7 @@
     state: absent
   become: false
   changed_when: false
+  tags: private_ca
 
 - name: add sshd configuration for certificates
   lineinfile:
@@ -77,3 +86,4 @@
     insertafter: HostKey {{ item.path }}
   with_items: "{{ private_keys.files }}"
   notify: restart sshd
+  tags: private_ca
