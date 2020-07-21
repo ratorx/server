@@ -8,7 +8,7 @@
 - name: upload CA cert to verify clients
   copy:
     src: "{{ docker_client_ca_cert_path }}"
-    dest: /etc/docker
+    dest: /etc/docker/ca.pem
 
 - name: configure docker
   template:
