@@ -48,10 +48,6 @@ The goal of `apps.yml` is to deploy applications on the remote using Docker Comp
 
 - Password hash and salt for authenticating to the HTTPS server for restricted resources.
 
-### Hacks and workarounds
-
-- Uses a custom syncthing image due to the current upstream not exposing a healthcheck. The upstream can be used on the next update.
-
 ## Misc
 
 There is also the `interactive_user.yml` playbook for creating a interactive user on the remote host for manual administration.
