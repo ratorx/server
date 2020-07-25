@@ -8,11 +8,10 @@ RUN apk --no-cache add \
   openssl \
   murmur
 
-# Add config file
-COPY init.sh .
+COPY entrypoint.sh /bin
 COPY murmur.ini /config
-
-ENTRYPOINT ["/init.sh", "/config/murmur.ini"]
 
 HEALTHCHECK --interval=1m --timeout=10s \
   CMD nc -uz localhost 64738 || exit 1
+
+ENTRYPOINT ["/bin/entrypoint.sh", "/usr/bin/murmurd", "-fg", "-ini", "/config/murmur.ini"]
