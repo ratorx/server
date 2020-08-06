@@ -9,11 +9,13 @@
   copy:
     src: "{{ docker_client_ca_cert_path }}"
     dest: /etc/docker/ca.pem
+  notify: restart docker
 
 - name: configure docker
   template:
     src: daemon.json.j2
     dest: /etc/docker/daemon.json
+  notify: restart docker
 
 - name: create systemd override config directory for docker
   file:
@@ -24,10 +26,12 @@
   copy:
     src: override.conf
     dest: /etc/systemd/system/docker.service.d
+  notify:
+    - reload systemd config
+    - restart docker
 
 - name: reload systemd
   systemd:
     name: docker
-    daemon_reload: true
     state: started
     enabled: true
