@@ -1,2 +1,2 @@
 #! /bin/sh
-exec docker-compose -f apps/docker-compose.yml "$@" 2>&1 | grep -v -e "site-packages/urllib3/connectionpool.py:979: InsecureRequestWarning: Unverified HTTPS request is being made to host" -e "warnings.warn("
+exec docker-compose -f apps/docker-compose.yml "$@" 2>&1 | grep -v -e "InsecureRequestWarning: Unverified HTTPS request is being made to host" -e "warnings.warn("
