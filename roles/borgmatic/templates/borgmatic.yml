@@ -16,11 +16,5 @@ retention:
   keep_yearly: 0
 
 hooks:
-  before_backup:
-    - systemctl stop docker
-
-  after_backup:
-    - systemctl start docker
-
   on_error:
     - "{{ internal_borgmatic_config_directory }}/fail.sh {{ server_email }}"
