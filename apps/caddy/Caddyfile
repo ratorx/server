@@ -23,8 +23,13 @@ https:// {
     format logfmt
   }
 
-  # Require authentication for all resources
-  import auth /*
+  # Require authentication for all resources except the status page
+  @notstatus {
+    not path /status
+  }
+  import auth @notstatus
+
+  redir /status https://status.{host}
 
   # Syncthing Admin UI
   import app syncthing syncthing:8384
@@ -37,5 +42,5 @@ https:// {
 }
 
 http:// {
-  redir https://{http.request.host}{http.request.uri} permanent
+  redir https://{host}{uri} permanent
 }
