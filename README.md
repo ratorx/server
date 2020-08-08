@@ -1,11 +1,22 @@
 # Server deployment tools
 
-There are two main entrypoints:
+There are three main entrypoints:
 
+- `provision.tf` - Terraform is used to provision the infrastructure.
 - `setup.yml` - An Ansible playbook that configures a freshly provisioned server.
 - `docker-compose.yml` - Docker-compose is used to deploy applciations to the server.
 
 The project uses [git-crypt](https://github.com/AGWA/git-crypt) to store secrets.
+
+## Provisioning infrastructure (`provision.tf`)
+
+The goal of `provision.tf` is to create the server and the infrastructure around it. The configuration variables are located in `terraform.tfvars`. It fetches the host to provision from `inventory.yml`.
+
+Currently it manages:
+
+- Creating the server on Hetzner Cloud.
+- Creating DNS records on Cloudflare.
+- Configuring monitoring on Uptimerobot.
 
 ## Basic system setup (`setup.yml`)
 
@@ -35,8 +46,8 @@ At a high level, it performs the following actions:
 - A few packages (certbot* and borgmatic*) in Debian stable are not recent enough for required features. These applications are provisioned from Debian testing.
 - Accessing the remote Docker daemon requires a CA cert despite using system CA signed certs on the remote end. Either the concatenated default cert store or just `/etc/ssl/certs/DST_Root_CA_X3.pem` needs to provided as the CA. The issue of automatically using default certs is tracked in [docker/cli#2468](https://github.com/docker/cli/issues/2468).
 - Manual intervention required for configuring automatic backups - root needs SSH access to the backup host. The current backup host doesn't support SSH CA authentication, so this cannot be automated easily.
-  - Possibly can rely on Ansible controller having access to backup host (generate and copy public key to controller and then add key to backup host).
-  - Alternatively could use a blessed root SSH key that has preconfigured access to backup host.
+  - This can be fixed by using the hardcoded SSH key in the repository to access the backup host.
+- Initial bootstrap of the server uses a different SSH key. This is automated using `make bootstrap` target, but it requires a different command to be run. This is because SSH CA has not been configured yet. A special SSH key is used for this, which lives in the repository. The key is hardcoded because Terraform needs a constant key when provisioning access to the server.
 
 ## Application deployment (`docker-compose.yml`)
 

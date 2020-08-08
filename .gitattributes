@@ -1,2 +1,4 @@
 inventory.yml filter=git-crypt diff=git-crypt
 .env filter=git-crypt diff=git-crypt
+terraform.tfvars filter=git-crypt diff=git-crypt
+misc/ssh/** filter=git-crypt diff=git-crypt
