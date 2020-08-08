@@ -38,7 +38,7 @@ At a high level, it performs the following actions:
 
 ## Application deployment
 
-The goal of `apps.yml` is to deploy applications on the remote using Docker Compose. Compose is wrapped in a playbook to use secrets stored in Ansible Vault. The current applications are:
+The goal of `apps.yml` is to deploy applications on the remote using Docker Compose. The current applications are:
 
 - Mumble server
 - Syncthing
