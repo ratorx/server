@@ -1,2 +1,2 @@
-production filter=git-crypt diff=git-crypt
-group_vars/server.yml filter=git-crypt diff=git-crypt
+inventory.yml filter=git-crypt diff=git-crypt
+.env filter=git-crypt diff=git-crypt

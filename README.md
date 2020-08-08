@@ -1,13 +1,15 @@
 # Server deployment tools
 
-There are two main entrypoints, which are both Ansible playbooks:
+There are two main entrypoints:
 
-- `setup.yml` - setup the system configuration on a fresh server.
-- `apps.yml` - wrapper for docker-compose which allows access to vaulted secrets.
+- `setup.yml` - An Ansible playbook that configures a freshly provisioned server.
+- `docker-compose.yml` - Docker-compose is used to deploy applciations to the server.
 
-## Basic system setup
+The project uses [git-crypt](https://github.com/AGWA/git-crypt) to store secrets.
 
-The goal of `setup.yml` is to automate the regular system maintenance and expose a Docker daemon.
+## Basic system setup (`setup.yml`)
+
+The goal of `setup.yml` is to automate the regular system maintenance and expose a Docker daemon on a fresh server. The configuration variables are located in `inventory.yml`.
 
 At a high level, it performs the following actions:
 
@@ -36,13 +38,15 @@ At a high level, it performs the following actions:
   - Possibly can rely on Ansible controller having access to backup host (generate and copy public key to controller and then add key to backup host).
   - Alternatively could use a blessed root SSH key that has preconfigured access to backup host.
 
-## Application deployment
+## Application deployment (`docker-compose.yml`)
 
-The goal of `apps.yml` is to deploy applications on the remote using Docker Compose. The current applications are:
+The goal of `apps.yml` is to deploy applications on the remote Docker daemon using Docker Compose. The configuration variables are located in `.env`.
+
+The current deployed applications are:
 
 - Mumble server
 - Syncthing
-- HTTP(S) server and proxy
+- Caddy
 
 ### External dependencies
 
@@ -50,4 +54,7 @@ The goal of `apps.yml` is to deploy applications on the remote using Docker Comp
 
 ## Misc
 
-There is also the `interactive_user.yml` playbook for creating a interactive user on the remote host for manual administration.
+Other tools:
+
+* `interactive_user.yml` playbook for creating a interactive user on the remote host for manual administration.
+* `dc` is a simple wrapper around docker-compose that suppresses spurious TLS warnings caused by using a docker context. The tracking issue is [docker/compose#7441](https://github.com/docker/compose/issues/7441).

@@ -1,18 +1,20 @@
 .PHONY: init main interactive apps up
 
-ANSIBLE-PLAYBOOK := ansible-playbook -i production
+ANSIBLE-PLAYBOOK := ansible-playbook
+# TODO: Replace when spurious errors fixed
+DOCKER-COMPOSE := ./dc
 
 # Application related rules
 up:
-	$(ANSIBLE-PLAYBOOK) apps.yml
+	$(DOCKER-COMPOSE) up -d --remove-orphans
 
 down:
-	$(ANSIBLE-PLAYBOOK) -e 'state=absent' apps.yml
+	$(DOCKER-COMPOSE) down
 
 force_up:
-	$(ANSIBLE-PLAYBOOK) -e 'force=true' apps.yml
+	$(DOCKER_COMPOSE) up -d --force-recreate
 
-# Provision the server
+# Setup the server
 # Special method to override the remote user for 1st invocation
 bootstrap:
 	$(ANSIBLE-PLAYBOOK) -e 'ansible_ssh_user=root' setup.yml
