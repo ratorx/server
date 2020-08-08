@@ -55,6 +55,7 @@
     cmd: diff <(ssh-keygen -L -f {{ item.path | quote }} | tail -n +2) <(ssh-keygen -L -f {{ temporary_directory.path | quote }}/existing_certificates/{{ inventory_hostname | quote }}{{ internal_host_key_directory }}/{{ item.path | basename | quote }} | tail -n +2)
     executable: /bin/bash
   with_items: "{{ certificates.files }}"
+  delegate_to: localhost
   changed_when: false
   failed_when: false
   become: false
