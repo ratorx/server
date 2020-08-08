@@ -1,7 +1,7 @@
 version: "3"
 services:
   murmur:
-    build: ./apps/murmur
+    build: ./deploy/murmur
     restart: unless-stopped
     ports:
       - "1337:64738"
@@ -22,7 +22,7 @@ services:
       - /data/syncthing:/var/syncthing:rw
 
   caddy:
-    build: ./apps/caddy
+    build: ./deploy/caddy
     restart: unless-stopped
     ports:
       - "80:80"
