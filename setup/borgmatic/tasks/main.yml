@@ -40,6 +40,23 @@
     src: borgmatic.timer
     dest: /etc/systemd/system
 
+- name: create root ssh directory
+  file:
+    path: /root/.ssh
+    state: directory
+    recurse: yes
+
+- name: generate SSH key for root
+  openssh_keypair:
+    path: /root/.ssh/id_ed25519
+    type: ed25519
+    size: 521
+    state: present
+  register: root_ssh
+
+- include_tasks: backup_access.yml
+  loop: "{{ groups['backup'] | map('extract', hostvars) | list }}"
+
 - name: enable borgmatic timer
   systemd:
     name: borgmatic.timer

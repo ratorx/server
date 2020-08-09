@@ -3,7 +3,9 @@ location:
     - /data
 
   repositories:
-    - "{{ backup_user }}@{{ backup_host }}:backups/{{ inventory_hostname }}.borg"
+{% for host in groups['backup'] %}
+    - "{{ hostvars[host].ansible_ssh_user }}@{{ hostvars[host].inventory_hostname }}:{{ internal_backup_repository_path }}"
+{% endfor %}
 
 storage:
   encryption_passphrase: "{{ backup_passphrase }}"

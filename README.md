@@ -45,9 +45,8 @@ At a high level, it performs the following actions:
 
 - A few packages (certbot* and borgmatic*) in Debian stable are not recent enough for required features. These applications are provisioned from Debian testing.
 - Accessing the remote Docker daemon requires a CA cert despite using system CA signed certs on the remote end. Either the concatenated default cert store or just `/etc/ssl/certs/DST_Root_CA_X3.pem` needs to provided as the CA. The issue of automatically using default certs is tracked in [docker/cli#2468](https://github.com/docker/cli/issues/2468).
-- Manual intervention required for configuring automatic backups - root needs SSH access to the backup host. The current backup host doesn't support SSH CA authentication, so this cannot be automated easily.
-  - This can be fixed by using the hardcoded SSH key in the repository to access the backup host.
 - Initial bootstrap of the server uses a different SSH key. This is automated using `make bootstrap` target, but it requires a different command to be run. This is because SSH CA has not been configured yet. A special SSH key is used for this, which lives in the repository. The key is hardcoded because Terraform needs a constant key when provisioning access to the server.
+- Setting up access to backup host is hacky, since the remote environment does not have Python, a shell or SSH CA support. Currently, raw scp commands are used to add to authorized_keys. localhost needs access to the backup hosts. Access is restricted to borg operations on the backup repository. The hardcoded SSH key is not used for security reasons (currently it is only used for temporary access before the iniitial bootstrap; adding permanent access to the backup hosts with a SSH key stored in a Git repo seems like a bad idea).
 
 ## Application deployment (`docker-compose.yml`)
 

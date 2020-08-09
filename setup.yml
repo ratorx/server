@@ -1,5 +1,5 @@
 #! /usr/bin/ansible-playbook
-- hosts: all
+- hosts: all,!backup
   become: true
   vars:
     ssh_ca_private_key_path: ~/.ssh/ca/ssh_ca

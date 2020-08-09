@@ -1,0 +1,40 @@
+- name: create a temporary directory
+  tempfile:
+    state: directory
+    suffix: backup_ssh_access
+  register: temp_dir
+  changed_when: false
+  become: false
+  delegate_to: localhost
+- name: "fetch authorized_keys from {{ item.inventory_hostname }}"
+  raw: "scp {{ item.ansible_ssh_user }}@{{ item.inventory_hostname }}:.ssh/authorized_keys {{ temp_dir.path }}"
+  changed_when: false
+  failed_when: false
+  become: false
+  delegate_to: localhost
+- name: "create authorized_keys for {{ item.inventory_hostname }} (if not fetched)"
+  file:
+    path: "{{ temp_dir.path }}/authorized_keys"
+    state: file
+  become: false
+  delegate_to: localhost
+- name: authorize SSH key
+  lineinfile:
+    path: "{{ temp_dir.path }}/authorized_keys"
+    regexp: ".*{{ inventory_hostname }}$"
+    line: "command=\"borg serve --restrict-to-repository {{ internal_backup_repository_path }}\",restrict {{ root_ssh.public_key }} {{ inventory_hostname }}"
+  register: add_ssh_key
+  become: false
+  delegate_to: localhost
+- name: "update authorized_keys on {{ item.inventory_hostname }}"
+  raw: "scp {{ temp_dir.path }}/authorized_keys {{ item.ansible_ssh_user }}@{{ item.inventory_hostname }}:.ssh/authorized_keys"
+  when: add_ssh_key is changed
+  become: false
+  delegate_to: localhost
+- name: remove temporary directory
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
+  changed_when: false
+  become: false
+  delegate_to: localhost
