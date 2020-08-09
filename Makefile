@@ -1,8 +1,9 @@
-.PHONY: up down force_up bootstrap setup setup_private_ca interactive_user
+.PHONY: up down force_up bootstrap setup setup_private_ca interactive_user provision plan
 
-ANSIBLE-PLAYBOOK := ansible-playbook
 # TODO: Replace when spurious errors fixed
 DOCKER-COMPOSE := ./misc/dc
+ANSIBLE-PLAYBOOK := ansible-playbook
+TERRAFORM := terraform
 
 # Application related rules
 up:
@@ -27,3 +28,10 @@ setup_private_ca:
 
 interactive_user:
 	$(ANSIBLE-PLAYBOOK) ./misc/interactive_user.yml
+
+# Provision the server
+provision:
+	$(TERRAFORM) apply
+
+plan:
+	$(TERRAFORM) plan
