@@ -24,7 +24,7 @@ provider "uptimerobot" {
 
 locals {
   # TODO: When module for_each is stabilized, use fqdns
-  fqdn     = split(".", keys(yamldecode(file("inventory.yml"))["all"]["hosts"])[0])
+  fqdn     = split(".", keys(yamldecode(file("inventory.yml"))["all"]["children"]["app"]["hosts"])[0])
   fqdn_len = length(local.fqdn)
 
   domain   = join(".", slice(local.fqdn, local.fqdn_len - 2, local.fqdn_len))

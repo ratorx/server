@@ -1,4 +1,4 @@
-- hosts: all,!backup
+- hosts: app
   become: true
   gather_facts: false
   vars_prompt:
