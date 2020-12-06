@@ -7,13 +7,14 @@ TERRAFORM := terraform
 
 # Application related rules
 up:
+	$(DOCKER-COMPOSE) build --pull
 	$(DOCKER-COMPOSE) up -d --remove-orphans
 
 down:
 	$(DOCKER-COMPOSE) down
 
 force_up:
-	$(DOCKER_COMPOSE) up -d --force-recreate
+	$(DOCKER-COMPOSE) up -d --force-recreate
 
 # Setup the server
 # Special method to override the remote user for 1st invocation
