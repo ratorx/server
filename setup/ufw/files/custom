@@ -3,11 +3,6 @@ title=dhclient
 description=Allow remote network configuration
 ports=68/udp
 
-[Docker]
-title=docker
-description=Remote access to Docker daemon
-ports=2376/tcp
-
 [Murmur]
 title=murmur
 description=Mumble server listen and ping ports

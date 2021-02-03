@@ -1,8 +1,0 @@
-- name: reload systemd config
-  systemd:
-    daemon_reload: true
-
-- name: restart docker
-  service:
-    name: docker
-    state: restarted

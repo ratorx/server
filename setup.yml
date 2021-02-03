@@ -4,7 +4,6 @@
   vars:
     ssh_ca_private_key_path: ~/.ssh/ca/ssh_ca
     ssh_ca_public_key_path: "{{ ssh_ca_private_key_path }}.pub"
-    docker_client_ca_cert_path: ~/.config/docker/ca/ca.crt
     server_email: "server+{{ inventory_hostname_short }}@{{ '.'.join(inventory_hostname.split('.')[-2:]) }}"
   roles:
     # Basic system configuration

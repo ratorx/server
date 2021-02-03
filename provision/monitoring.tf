@@ -13,7 +13,6 @@ resource "uptimerobot_monitor" "server" {
 
 locals {
   monitors = {
-    docker    = 2376
     http      = 80
     https     = 443
     mumble    = 1337

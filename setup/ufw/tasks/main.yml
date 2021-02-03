@@ -16,7 +16,6 @@
   with_items:
     - OpenSSH
     - DHCP
-    - Docker
     - Murmur
     - Syncthing
     - WWW Full

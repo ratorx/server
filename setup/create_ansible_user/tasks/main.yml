@@ -1,6 +1,13 @@
+- name: create docker group
+  group:
+    name: docker
+    state: present
 - name: create remote user for ansible
   user:
     name: "{{ internal_username }}"
+    append: true
+    groups:
+      - docker
     comment: Ansible System User
     password_lock: true
     password: "!"

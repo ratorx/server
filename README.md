@@ -4,7 +4,7 @@ There are three main entrypoints:
 
 - `provision.tf` - Terraform is used to provision the infrastructure.
 - `setup.yml` - An Ansible playbook that configures a freshly provisioned server.
-- `docker-compose.yml` - Docker-compose is used to deploy applciations to the server.
+- `docker-compose.yml` - Docker-compose is used to deploy applications to the server.
 
 The project uses [git-crypt](https://github.com/AGWA/git-crypt) to store secrets.
 
@@ -20,7 +20,7 @@ Currently it manages:
 
 ## Basic system setup (`setup.yml`)
 
-The goal of `setup.yml` is to automate the regular system maintenance and expose a Docker daemon on a fresh server. The configuration variables are located in `inventory.yml`.
+The goal of `setup.yml` is to automate the regular system maintenance and setup Docker on a fresh server. The configuration variables are located in `inventory.yml`.
 
 At a high level, it performs the following actions:
 
@@ -31,7 +31,7 @@ At a high level, it performs the following actions:
 - Configures automated backups with borgmatic (and restores latest backup if no data found).
 - Sets up automatic SSL certificate renewal with certbot (and provisions if none exist).
 - Sets up exim4 as MTA to notify about server events.
-- Exposes Docker daemon with bidirectional TLS authentication.
+- Configures Docker
 
 ### External dependencies
 
@@ -44,7 +44,6 @@ At a high level, it performs the following actions:
 ### Hacks, workarounds and manual intervention
 
 - A few packages (certbot* and borgmatic*) in Debian stable are not recent enough for required features. These applications are provisioned from Debian testing.
-- Accessing the remote Docker daemon requires a CA cert despite using system CA signed certs on the remote end. Either the concatenated default cert store or just `/etc/ssl/certs/DST_Root_CA_X3.pem` needs to provided as the CA. The issue of automatically using default certs is tracked in [docker/cli#2468](https://github.com/docker/cli/issues/2468).
 - Initial bootstrap of the server uses a different SSH key. This is automated using `make bootstrap` target, but it requires a different command to be run. This is because SSH CA has not been configured yet. A special SSH key is used for this, which lives in the repository. The key is hardcoded because Terraform needs a constant key when provisioning access to the server.
 - Setting up access to the backup host is tricky, since it doesn't have Python, a shell or SSH CA support. Instead, raw scp commands are used to update the authorized_keys. App servers are only allowed to perform borg operations and only on their own backup repository.
 
@@ -67,4 +66,4 @@ The current deployed applications are:
 Other tools:
 
 * `interactive_user.yml` playbook for creating a interactive user on the remote host for manual administration.
-* `dc` is a simple wrapper around docker-compose that suppresses spurious TLS warnings caused by using a docker context. The tracking issue is [docker/compose#7441](https://github.com/docker/compose/issues/7441).
+* docker-compose uses paramiko for SSH. paramiko does not support verifying host keys signed by a CA ([paramiko/paramiko#771](https://github.com/paramiko/paramiko/issues/771)). This results in a warning in docker-compose, where the default behaviour is to ignore host key check failures (sigh...). The warning can be supressed by manually adding host keys to `~/.ssh/known_hosts`.

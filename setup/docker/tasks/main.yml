@@ -1,34 +1,31 @@
-- import_tasks: install.yml
+- name: install dependencies for docker install
+  apt:
+    pkg:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
 
-- name: create docker config directory
-  file:
-    path: /etc/docker
-    state: directory
+- name: add docker repository key
+  apt_key:
+    url: "https://download.docker.com/linux/debian/gpg"
+    id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+    state: present
 
-- name: upload CA cert to verify clients
-  copy:
-    src: "{{ docker_client_ca_cert_path }}"
-    dest: /etc/docker/ca.pem
-  notify: restart docker
+- name: add docker repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
 
-- name: configure docker
-  template:
-    src: daemon.json.j2
-    dest: /etc/docker/daemon.json
-  notify: restart docker
-
-- name: create systemd override config directory for docker
-  file:
-    path: /etc/systemd/system/docker.service.d
-    state: directory
-
-- name: override docker.service to use hosts specified in daemon.json
-  copy:
-    src: override.conf
-    dest: /etc/systemd/system/docker.service.d
-  notify:
-    - reload systemd config
-    - restart docker
+- name: install docker
+  apt:
+    pkg:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: true
 
 - name: reload systemd
   systemd:
