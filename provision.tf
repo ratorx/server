@@ -5,6 +5,18 @@ terraform {
       name = "server"
     }
   }
+  required_providers {
+    cloudflare = {
+      source = "cloudflare/cloudflare"
+    }
+    hcloud = {
+      source = "hetznercloud/hcloud"
+    }
+    uptimerobot = {
+      source = "louy/uptimerobot"
+    }
+  }
+  required_version = ">= 0.13"
 }
 
 variable cloudflare_api_token {}
