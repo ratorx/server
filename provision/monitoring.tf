@@ -1,4 +1,4 @@
-resource "uptimerobot_alert_contact" "server" {
+resource "uptimerobot_alert_contact" "email" {
   friendly_name = "${var.hostname} email"
   type          = "email"
   value         = "server+${var.hostname}@${var.domain}"
@@ -9,6 +9,9 @@ resource "uptimerobot_monitor" "server" {
   type          = "ping"
   interval      = 300
   url           = local.fqdn
+  alert_contact {
+    id = uptimerobot_alert_contact.email.id
+  }
 }
 
 locals {
@@ -28,6 +31,9 @@ resource "uptimerobot_monitor" "monitors" {
   port          = each.value
   interval      = 300
   url           = local.fqdn
+  alert_contact {
+    id = uptimerobot_alert_contact.email.id
+  }
 
   for_each = local.monitors
 }
