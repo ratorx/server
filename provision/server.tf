@@ -3,7 +3,7 @@ resource "hcloud_ssh_key" "temp" {
   public_key = file(var.ssh_public_key_path)
 }
 
-resource "hcloud_server" "server" {
+resource "hcloud_server" "main" {
   name        = var.hostname
   server_type = "cpx11"
   image       = "debian-10"

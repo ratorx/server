@@ -4,7 +4,7 @@ resource "uptimerobot_alert_contact" "email" {
   value         = "server+${var.hostname}@${var.domain}"
 }
 
-resource "uptimerobot_monitor" "server" {
+resource "uptimerobot_monitor" "ping" {
   friendly_name = local.fqdn
   type          = "ping"
   interval      = 300
@@ -38,17 +38,17 @@ resource "uptimerobot_monitor" "monitors" {
   for_each = local.monitors
 }
 
-resource "uptimerobot_status_page" "server" {
+resource "uptimerobot_status_page" "main" {
   friendly_name = "Status for ${local.fqdn}"
   custom_domain = "status.${local.fqdn}"
   sort          = "a-z"
-  monitors      = concat([uptimerobot_monitor.server.id], values(uptimerobot_monitor.monitors)[*].id)
+  monitors      = concat([uptimerobot_monitor.ping.id], values(uptimerobot_monitor.monitors)[*].id)
   status        = "active"
 }
 
-resource "cloudflare_record" "server_status_cname" {
+resource "cloudflare_record" "status_cname" {
   zone_id = local.cloudflare_zone_id
   name    = "status.${var.hostname}"
   type    = "CNAME"
-  value   = uptimerobot_status_page.server.dns_address
+  value   = uptimerobot_status_page.main.dns_address
 }

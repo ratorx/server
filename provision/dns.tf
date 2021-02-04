@@ -1,26 +1,26 @@
 locals {
-  cloudflare_zone_id = data.cloudflare_zones.base.zones[0].id
+  cloudflare_zone_id = data.cloudflare_zones.main.zones[0].id
 }
 
-data "cloudflare_zones" "base" {
+data "cloudflare_zones" "main" {
   filter {
     name = var.domain
   }
 }
 
 # base server records
-resource "cloudflare_record" "server_a" {
+resource "cloudflare_record" "a" {
   zone_id = local.cloudflare_zone_id
   name    = var.hostname
   type    = "A"
-  value   = hcloud_server.server.ipv4_address
+  value   = hcloud_server.main.ipv4_address
 }
 
-resource "cloudflare_record" "server_aaaa" {
+resource "cloudflare_record" "aaaa" {
   zone_id = local.cloudflare_zone_id
   name    = var.hostname
   type    = "AAAA"
-  value   = hcloud_server.server.ipv6_address
+  value   = hcloud_server.main.ipv6_address
 }
 
 # application-specific
