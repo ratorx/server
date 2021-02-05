@@ -19,14 +19,14 @@
     mode: 0600
 
 - name: generate a certificate
-  command: "certbot certonly --non-interactive -d {{ inventory_hostname }}"
+  command: "certbot certonly --non-interactive -d *.{{ domain }}"
   args:
-    creates: "/etc/letsencrypt/live/{{ inventory_hostname }}"
+    creates: "/etc/letsencrypt/live/{{ domain }}"
 
 - name: create symlink for default certificates
   file:
     path: /etc/letsencrypt/live/default
-    src: "{{ inventory_hostname }}"
+    src: "{{ domain }}"
     state: link
     follow: false
 
