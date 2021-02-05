@@ -1,7 +1,7 @@
 .PHONY: up down force_up bootstrap setup setup_private_ca interactive_user provision plan
 
 # TODO: Replace when spurious errors fixed
-DOCKER-COMPOSE := ./misc/dc
+DOCKER-COMPOSE := docker-compose
 ANSIBLE-PLAYBOOK := ansible-playbook
 TERRAFORM := terraform
 
