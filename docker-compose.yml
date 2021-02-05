@@ -13,8 +13,6 @@ services:
   syncthing:
     image: syncthing/syncthing:latest
     restart: unless-stopped
-    expose:
-      - "8384"
     ports:
       - "22000:22000"
       - "21027:21027/udp"
