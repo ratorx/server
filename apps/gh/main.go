@@ -44,9 +44,15 @@ func defaultHandler(res http.ResponseWriter, req *http.Request) {
 
 func logRequests(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		requestor := req.Header.Get("X-Forwarded-For")
+		if requestor == "" {
+			requestor = req.RemoteAddr
+		}
+		
 		statusReporter := &httpStatusRecorder{ResponseWriter: res}
 		h.ServeHTTP(statusReporter, req)
-		log.Printf("%s %s %v %s %q", req.Method, req.URL.Path, statusReporter.Status, req.RemoteAddr, req.Header.Get("User-Agent"))
+
+		log.Printf("%s %s %v %s %q", req.Method, req.URL.Path, statusReporter.Status, requestor, req.Header.Get("User-Agent"))
 	})
 }
 
