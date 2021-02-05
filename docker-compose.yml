@@ -20,6 +20,10 @@ services:
       - "21027:21027/udp"
     volumes:
       - /data/syncthing:/var/syncthing:rw
+  
+  gh:
+    build: ./apps/gh
+    restart: unless-stopped
 
   caddy:
     build: ./apps/caddy
@@ -37,6 +41,7 @@ services:
       - DOMAIN
       - FQDN
     depends_on:
+      - gh
       - syncthing
 volumes:
   caddy_cache:

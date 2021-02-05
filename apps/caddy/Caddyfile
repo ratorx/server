@@ -23,6 +23,14 @@
   }
 }
 
+(gh_shortlink) {
+  @{args.0}_link {
+    path /{args.0}*
+    not path /{args.0}/*
+  }
+  rewrite @{args.0}_link /{args.1}{path}
+}
+
 https://{$FQDN} {
   import base
   encode gzip
@@ -42,7 +50,12 @@ https://{$FQDN} {
   file_server * browse {
     hide apps* config* *stfolder* *.git* *node_modules*
   }
+}
 
+https://gh.{$DOMAIN} {
+  import base
+  import gh_shortlink sshca ratorx/sshca
+  reverse_proxy * gh:8080
 }
 
 https://*.{$DOMAIN} {

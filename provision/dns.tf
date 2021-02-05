@@ -24,7 +24,7 @@ resource "cloudflare_record" "aaaa" {
 }
 
 locals {
-  domain_aliases = ["mumble"]
+  domain_aliases = ["mumble", "gh"]
 }
 
 resource "cloudflare_record" "aliases" {
