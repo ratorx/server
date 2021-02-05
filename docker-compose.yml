@@ -34,6 +34,8 @@ services:
     environment:
       - CADDY_ADMIN_USER_PASSWORD_HASH
       - CADDY_ADMIN_USER_SALT
+      - DOMAIN
+      - FQDN
     depends_on:
       - syncthing
 volumes:

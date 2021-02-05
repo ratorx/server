@@ -16,12 +16,16 @@
   }
 }
 
-https:// {
+(base) {
   tls /certs/live/default/fullchain.pem /certs/live/default/privkey.pem
-  encode gzip
   log {
     format logfmt
   }
+}
+
+https://{$FQDN} {
+  import base
+  encode gzip
 
   # Require authentication for all resources except the status page
   @notstatus {
@@ -39,6 +43,11 @@ https:// {
     hide apps* config* *stfolder* *.git* *node_modules*
   }
 
+}
+
+https://*.{$DOMAIN} {
+  import base
+  respond 400
 }
 
 http:// {
