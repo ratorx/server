@@ -51,7 +51,6 @@ data "cloudflare_zones" "base" {
 variable "ssh_public_key_path" {}
 variable "app_hosts" {
   type = map(object({
-    cloudflare_api_token = string
     backup_passphrase = string
   }))
 }
@@ -64,7 +63,6 @@ module "server" {
   ssh_public_key_path = var.ssh_public_key_path
 
   backup_passphrase = each.value.backup_passphrase
-  cloudflare_api_token = each.value.cloudflare_api_token
 
   for_each = var.app_hosts
 }
