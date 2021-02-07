@@ -34,10 +34,20 @@ provider "uptimerobot" {
   api_key = var.uptimerobot_api_token
 }
 
+variable "domain" {
+  type = string
+  description = "Base domain for DNS entries"
+}
+
+data "cloudflare_zones" "base" {
+  filter {
+    name = var.domain
+  }
+}
+
 locals {
   fqdns = [for item in keys(yamldecode(file("inventory.yml"))["all"]["children"]["app"]["hosts"]) : split(".", item)]
   hosts = { for fqdn in local.fqdns : join(".", fqdn) => {
-    domain   = join(".", slice(fqdn, length(fqdn) - 2, length(fqdn)))
     hostname = join(".", slice(fqdn, 0, length(fqdn) - 2))
   } }
 }
@@ -46,7 +56,7 @@ variable "ssh_public_key_path" {}
 module "server" {
   source = "./provision"
 
-  domain              = each.value.domain
+  cloudflare_zone     = data.cloudflare_zones.base.zones[0]
   hostname            = each.value.hostname
   ssh_public_key_path = var.ssh_public_key_path
 

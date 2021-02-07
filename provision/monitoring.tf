@@ -45,7 +45,7 @@ resource "uptimerobot_status_page" "main" {
 }
 
 resource "cloudflare_record" "status_cname" {
-  zone_id = local.cloudflare_zone_id
+  zone_id = var.cloudflare_zone.id
   name    = "status.${var.hostname}"
   type    = "CNAME"
   value   = uptimerobot_status_page.main.dns_address
