@@ -1,5 +1,8 @@
 terraform {
   required_providers {
+    ansible = {
+      source = "nbering/ansible"
+    }
     cloudflare = {
       source = "cloudflare/cloudflare"
     }

@@ -16,6 +16,23 @@ variable "cloudflare_zone" {
   description = "Base Cloudflare zone to create DNS records in"
 }
 
+variable "cloudflare_api_token" {
+  type = string
+  description = "API Token for Cloudflare which will be used by the host for ACME"
+  sensitive = true
+}
+
+variable "backup_passphrase" {
+  type = string
+  description = "Passphrase to the Borg backup repository"
+  sensitive = true
+}
+
 locals {
   fqdn = cloudflare_record.a.hostname
+}
+
+output "fqdn" {
+  description = "FQDN of the server"
+  value = local.fqdn
 }

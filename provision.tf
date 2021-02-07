@@ -6,6 +6,9 @@ terraform {
     }
   }
   required_providers {
+    ansible = {
+      source = "nbering/ansible"
+    }
     cloudflare = {
       source = "cloudflare/cloudflare"
     }
@@ -45,20 +48,49 @@ data "cloudflare_zones" "base" {
   }
 }
 
-locals {
-  fqdns = [for item in keys(yamldecode(file("inventory.yml"))["all"]["children"]["app"]["hosts"]) : split(".", item)]
-  hosts = { for fqdn in local.fqdns : join(".", fqdn) => {
-    hostname = join(".", slice(fqdn, 0, length(fqdn) - 2))
-  } }
+variable "ssh_public_key_path" {}
+variable "app_hosts" {
+  type = map(object({
+    cloudflare_api_token = string
+    backup_passphrase = string
+  }))
 }
 
-variable "ssh_public_key_path" {}
 module "server" {
   source = "./provision"
 
   cloudflare_zone     = data.cloudflare_zones.base.zones[0]
-  hostname            = each.value.hostname
+  hostname            = each.key
   ssh_public_key_path = var.ssh_public_key_path
 
-  for_each = local.hosts
+  backup_passphrase = each.value.backup_passphrase
+  cloudflare_api_token = each.value.cloudflare_api_token
+
+  for_each = var.app_hosts
+}
+
+variable "backup_host" {
+  type = object({
+    fqdn = string
+    username = string
+    private_key_path = string
+  })
+}
+
+resource "ansible_host" "backup" {
+  inventory_hostname = var.backup_host.fqdn
+  groups = ["backup"]
+  vars = {
+    ansible_ssh_user = var.backup_host.username
+    ansible_ssh_private_key_file = var.backup_host.private_key_path
+  }
+}
+
+resource "ansible_group" "all" {
+  inventory_group_name = "all"
+  children = ["app", "backup"]
+  vars = {
+    ansible_connection = "ssh"
+    ansible_ssh_user = "ansible"
+  }
 }
