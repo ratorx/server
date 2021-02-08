@@ -35,4 +35,4 @@ provision:
 	$(TERRAFORM) apply
 
 plan:
-	$(TERRAFORM) plan
+	$(TERRAFORM) plan -refresh=false 
