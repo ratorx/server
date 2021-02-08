@@ -4,21 +4,13 @@
       - ufw
     state: present
 
-- name: upload custom application configs
-  copy:
-    src: custom
-    dest: /etc/ufw/applications.d
-
+# TODO: Possibly update /etc/services for easier administration
 - name: allow ports for application
   ufw:
     rule: allow
-    name: "{{ item }}"
-  with_items:
-    - OpenSSH
-    - DHCP
-    - Murmur
-    - Syncthing
-    - WWW Full
+    port: "{{ item.value.port }}"
+    proto: "{{ item.value.protocol }}"
+  with_dict: "{{ ufw_ports }}"
   notify: reload ufw
 
 - name: enable ufw logging

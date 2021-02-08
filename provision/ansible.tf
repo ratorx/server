@@ -37,5 +37,6 @@ resource "ansible_host" "app" {
   vars = {
     cloudflare_api_token = cloudflare_api_token.certbot.value
     backup_passphrase = var.backup_passphrase
+    ufw_ports_json = jsonencode(var.ports)
   }
 }
