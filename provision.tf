@@ -49,11 +49,11 @@ data "cloudflare_zones" "base" {
 }
 
 variable "ssh_public_key_path" {}
-variable "app_hosts" {
-  type = map(object({
+variable "app_host" {
+  type = object({
+    name = string
     backup_passphrase = string
-    port_names = set(string)
-  }))
+  })
 }
 
 variable "ports" {
@@ -68,15 +68,11 @@ module "server" {
   source = "./provision"
 
   cloudflare_zone     = data.cloudflare_zones.base.zones[0]
-  hostname            = each.key
+  hostname            = var.app_host.name
   ssh_public_key_path = var.ssh_public_key_path
-  ports = merge({
-    for port_name in each.value.port_names: port_name => var.ports[port_name]
-  })
+  ports = var.ports
 
-  backup_passphrase = each.value.backup_passphrase
-
-  for_each = var.app_hosts
+  backup_passphrase = var.app_host.backup_passphrase
 }
 
 variable "backup_host" {
