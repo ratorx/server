@@ -22,6 +22,15 @@ variable "backup_passphrase" {
   sensitive = true
 }
 
+variable "ports" {
+  type = map(object({
+    port: number
+    protocol: string
+    monitored: bool
+  }))
+  description = "Ports to configure"
+}
+
 locals {
   fqdn = cloudflare_record.a.hostname
 }

@@ -12,16 +12,6 @@ resource "uptimerobot_monitor" "ping" {
   }
 }
 
-locals {
-  monitors = {
-    http      = 80
-    https     = 443
-    mumble    = 1337
-    ssh       = 22
-    syncthing = 22000
-  }
-}
-
 resource "uptimerobot_monitor" "monitors" {
   friendly_name = "${local.fqdn} - ${each.key}"
   type          = "port"
@@ -33,7 +23,7 @@ resource "uptimerobot_monitor" "monitors" {
     id = data.uptimerobot_alert_contact.email.id
   }
 
-  for_each = local.monitors
+  for_each = { for port_name, port in var.ports: port_name => port.port if port.monitored }
 }
 
 resource "uptimerobot_status_page" "main" {

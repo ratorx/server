@@ -52,6 +52,15 @@ variable "ssh_public_key_path" {}
 variable "app_hosts" {
   type = map(object({
     backup_passphrase = string
+    port_names = set(string)
+  }))
+}
+
+variable "ports" {
+  type = map(object({
+    port = number
+    protocol = string
+    monitored = bool
   }))
 }
 
@@ -61,6 +70,9 @@ module "server" {
   cloudflare_zone     = data.cloudflare_zones.base.zones[0]
   hostname            = each.key
   ssh_public_key_path = var.ssh_public_key_path
+  ports = merge({
+    for port_name in each.value.port_names: port_name => var.ports[port_name]
+  })
 
   backup_passphrase = each.value.backup_passphrase
 
