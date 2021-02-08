@@ -7,8 +7,8 @@ TERRAFORM := terraform
 
 # Application related rules
 up:
-	$(DOCKER-COMPOSE) build --pull
-	$(DOCKER-COMPOSE) up -d --remove-orphans
+	DOCKER_BUILDKIT=1 $(DOCKER-COMPOSE) build --pull
+	COMPOSE_DOCKER_CLI_BUILD=0 $(DOCKER-COMPOSE) up -d --no-build --remove-orphans
 
 down:
 	$(DOCKER-COMPOSE) down
