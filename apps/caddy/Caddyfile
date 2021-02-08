@@ -35,7 +35,7 @@
   rewrite @{args.0}_link /{args.1}{path}
 }
 
-https://{$FQDN} {
+https://{$MAIN_DOMAIN} {
   import tls
   import log
   encode gzip
@@ -57,7 +57,7 @@ https://{$FQDN} {
   }
 }
 
-https://gh.{$DOMAIN} {
+https://{$GH_DOMAIN_ALIAS} {
   import tls
   import log
   import gh_shortlink sshca ratorx/sshca

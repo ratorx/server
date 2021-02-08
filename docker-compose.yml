@@ -4,8 +4,8 @@ services:
     build: ./apps/murmur
     restart: unless-stopped
     ports:
-      - "1337:64738"
-      - "1337:64738/udp"
+      - "${MURMUR_PORT:?}:64738"
+      - "${MURMUR_UDP_PORT:?}:64738/udp"
     volumes:
       - /etc/letsencrypt:/data/certs:ro
       - /data/murmur:/data/db:rw
@@ -14,8 +14,8 @@ services:
     image: syncthing/syncthing:latest
     restart: unless-stopped
     ports:
-      - "22000:22000"
-      - "21027:21027/udp"
+      - "${SYNCTHING_PORT:?}:22000"
+      - "${SYNCTHING_DISCOVERY_PORT:?}:21027/udp"
     volumes:
       - /data/syncthing:/var/syncthing:rw
   
@@ -27,17 +27,17 @@ services:
     build: ./apps/caddy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - "${HTTP_PORT:?}:80"
+      - "${HTTPS_PORT:?}:443"
     volumes:
       - caddy_cache:/data:rw
       - /etc/letsencrypt:/certs:ro
       - /data/syncthing:/usr/share/caddy:ro
     environment:
-      - CADDY_ADMIN_USER_PASSWORD_HASH
-      - CADDY_ADMIN_USER_SALT
-      - DOMAIN
-      - FQDN
+      - CADDY_ADMIN_USER_PASSWORD_HASH=${CADDY_ADMIN_USER_PASSWORD_HASH:?}
+      - CADDY_ADMIN_USER_SALT=${CADDY_ADMIN_USER_SALT:?}
+      - MAIN_DOMAIN=${MAIN_DOMAIN:?}
+      - GH_DOMAIN_ALIAS=${GH_DOMAIN_ALIAS:?}
     depends_on:
       - gh
       - syncthing

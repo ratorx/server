@@ -38,7 +38,7 @@ provider "uptimerobot" {
 }
 
 variable "domain" {
-  type = string
+  type        = string
   description = "Base domain for DNS entries"
 }
 
@@ -51,15 +51,15 @@ data "cloudflare_zones" "base" {
 variable "ssh_public_key_path" {}
 variable "app_host" {
   type = object({
-    name = string
+    name              = string
     backup_passphrase = string
   })
 }
 
 variable "ports" {
   type = map(object({
-    port = number
-    protocol = string
+    port      = number
+    protocol  = string
     monitored = bool
   }))
 }
@@ -70,33 +70,53 @@ module "server" {
   cloudflare_zone     = data.cloudflare_zones.base.zones[0]
   hostname            = var.app_host.name
   ssh_public_key_path = var.ssh_public_key_path
-  ports = var.ports
+  ports               = var.ports
 
   backup_passphrase = var.app_host.backup_passphrase
 }
 
 variable "backup_host" {
   type = object({
-    fqdn = string
-    username = string
+    fqdn             = string
+    username         = string
     private_key_path = string
   })
 }
 
 resource "ansible_host" "backup" {
   inventory_hostname = var.backup_host.fqdn
-  groups = ["backup"]
+  groups             = ["backup"]
   vars = {
-    ansible_ssh_user = var.backup_host.username
+    ansible_ssh_user             = var.backup_host.username
     ansible_ssh_private_key_file = var.backup_host.private_key_path
   }
 }
 
 resource "ansible_group" "all" {
   inventory_group_name = "all"
-  children = ["app", "backup"]
+  children             = ["app", "backup"]
   vars = {
     ansible_connection = "ssh"
-    ansible_ssh_user = "ansible"
+    ansible_ssh_user   = "ansible"
   }
+}
+
+variable "compose_env" {
+  type      = map(string)
+  sensitive = true
+}
+
+locals {
+  docker_compose_env = merge(
+    var.compose_env,
+    { for name, port in var.ports : "${name}_port" => port.port },
+    { for name, alias in module.server.domain_aliases : "${name}_domain_alias" => alias },
+    { main_domain = module.server.fqdn },
+  )
+}
+
+resource "local_file" "docker_compose_env" {
+  filename = "${path.root}/.env"
+  file_permission = "0600"
+  content  = join("\n", [for key, val in local.docker_compose_env : "${upper(key)}=\"${val}\""])
 }

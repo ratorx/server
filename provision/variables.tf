@@ -39,3 +39,7 @@ output "fqdn" {
   description = "FQDN of the server"
   value = local.fqdn
 }
+
+output "domain_aliases" {
+  value = { for name in local.domain_aliases : name => cloudflare_record.aliases[name].hostname }
+}
