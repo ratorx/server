@@ -1,3 +1,4 @@
+# Don't remove entries from this file, because it may interact badly with git history? (untested)
 inventory.yml filter=git-crypt diff=git-crypt
 .env filter=git-crypt diff=git-crypt
 terraform.tfvars filter=git-crypt diff=git-crypt
