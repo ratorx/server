@@ -29,7 +29,6 @@ At a high level, it performs the following actions:
 - Configures unattended upgrades for system packages.
 - Configures UFW as the system firewall.
 - Configures automated backups with borgmatic (and restores latest backup if no data found).
-- Sets up automatic SSL certificate renewal with certbot (and provisions if none exist).
 - Sets up exim4 as MTA to notify about server events.
 - Configures Docker
 

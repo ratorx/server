@@ -1,75 +1,69 @@
 {
-  admin off
-  auto_https off
-}
-
-(auth) {
-  basicauth {args.0} {
-   admin {$CADDY_ADMIN_USER_PASSWORD_HASH} {$CADDY_ADMIN_USER_SALT}
-  }
+	admin off
 }
 
 (app) {
-  # Add trailing slash to all backend communication
-  redir /app/{args.0} /app/{args.0}/
-  handle_path /app/{args.0}/* {
-    reverse_proxy {args.1}
-  }
-}
-
-(tls) {
-  tls /certs/live/default/fullchain.pem /certs/live/default/privkey.pem
-}
-
-(log) {
-  log {
-    format console
-  }
+	# Add trailing slash to all backend communication
+	redir /app/{args.0} /app/{args.0}/
+	handle_path /app/{args.0}/* {
+		reverse_proxy {args.1}
+	}
 }
 
 (gh_shortlink) {
-  @{args.0}_link {
-    path /{args.0}*
-    not path /{args.0}/*
-  }
-  rewrite @{args.0}_link /{args.1}{path}
-}
-
-https://{$MAIN_DOMAIN} {
-  import tls
-  import log
-  encode gzip
-
-  # Require authentication for all resources except the status page
-  @notstatus {
-    not path /status
-  }
-  import auth @notstatus
-
-  redir /status https://status.{host}
-
-  # Syncthing Admin UI
-  import app syncthing syncthing:8384
-  
-  root * /usr/share/caddy
-  file_server * browse {
-    hide apps* config* *stfolder* *.git* *node_modules*
-  }
-}
-
-https://{$GH_DOMAIN_ALIAS} {
-  import tls
-  import log
-  import gh_shortlink sshca ratorx/sshca
-  reverse_proxy * gh:8080
+	@{args.0}_link {
+		path /{args.0}*
+		not path /{args.0}/*
+	}
+	rewrite @{args.0}_link /{args.1}{path}
 }
 
 https:// {
-  import tls
-  import log
-  respond 400
+	log {
+		format console
+	}
+
+	@main {
+		host {env.MAIN_DOMAIN}
+	}
+	handle @main {
+		encode gzip
+
+		# Require authentication for all resources except the status page
+		@notstatus {
+			not path /status
+		}
+		basicauth @notstatus {
+			admin {env.CADDY_ADMIN_USER_PASSWORD_HASH} {env.CADDY_ADMIN_USER_SALT}
+		}
+
+		redir /status https://status.{host}
+
+		# Syncthing Admin UI
+		import app syncthing syncthing:8384
+
+		root * /usr/share/caddy
+		file_server * browse {
+			hide apps* config* *stfolder* *.git* *node_modules*
+		}
+	}
+
+	@gh {
+		host {env.GH_DOMAIN_ALIAS}
+	}
+	handle @gh {
+		import gh_shortlink sshca ratorx/sshca
+		reverse_proxy * gh:8080
+	}
+
+	@mumble {
+		host {env.MUMBLE_DOMAIN_ALIAS}
+	}
+	handle @mumble {
+		redir https://mumble.info
+	}
 }
 
 http:// {
-  redir https://{host}{uri} permanent
+	redir https://{host}{uri} permanent
 }

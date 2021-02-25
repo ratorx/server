@@ -1,0 +1,14 @@
+{
+  "apps": {
+    "layer4": {
+      "servers": {
+        "murmur": {
+          "listen": [":64738"],
+          "routes": [
+            {"handle": [{"handler": "tls"}, {"handler": "proxy", "upstreams": [{"dial": ["murmur:64738"], "tls": {"insecure_skip_verify": true}}]}]}
+          ]
+        }
+      }
+    }
+  }
+}

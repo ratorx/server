@@ -31,14 +31,12 @@ module "monitoring" {
 module "ansible" {
   source             = "./provision/ansible"
   server_a_record    = module.server.a_record
-  server_aaaa_record = module.server.aaaa_record
   backup_config = merge(
     var.backup_host_config,
     { passphrase = var.backup_passphrase },
     { private_key_path = var.ssh_private_key_path }
   )
   used_ports      = var.ports
-  cloudflare_zone = local.cloudflare_zone
 }
 
 resource "cloudflare_record" "aliases" {

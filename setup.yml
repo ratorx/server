@@ -20,5 +20,4 @@
     - sign_host_keys
     - secure_access
     # System dependencies
-    - certbot
     - docker

@@ -3,9 +3,6 @@ terraform {
     ansible = {
       source = "nbering/ansible"
     }
-    cloudflare = {
-      source = "cloudflare/cloudflare"
-    }
   }
   required_version = ">= 0.13"
 }
@@ -17,15 +14,6 @@ variable "server_a_record" {
     value    = string
   })
   description = "DNS A record of the app server"
-}
-
-variable "server_aaaa_record" {
-  type = object({
-    name     = string
-    hostname = string
-    value    = string
-  })
-  description = "DNS AAAA record of the app server"
 }
 
 variable "backup_config" {
@@ -45,12 +33,4 @@ variable "used_ports" {
     protocol : string
   }))
   description = "External ports used on the app server"
-}
-
-variable "cloudflare_zone" {
-  type = object({
-    id   = string
-    name = string
-  })
-  description = "Cloudflare zone to authorize the certbot key for"
 }
