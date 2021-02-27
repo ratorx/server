@@ -36,7 +36,9 @@ module "ansible" {
     { passphrase = var.backup_passphrase },
     { private_key_path = var.ssh_private_key_path }
   )
-  used_ports      = var.ports
+  // Only allow non-app ports through the firewall
+  // App ports are automatically handled by Docker
+  system_ports      = { for name, port_spec in var.ports: name => port_spec if !lookup(port_spec, "app", false)
 }
 
 resource "cloudflare_record" "aliases" {

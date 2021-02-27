@@ -3,7 +3,7 @@ resource "ansible_host" "app" {
   groups             = ["app"]
   vars = {
     backup_passphrase    = var.backup_config.passphrase
-    ufw_ports_json       = jsonencode(var.used_ports)
+    ufw_ports_json       = jsonencode(var.system_ports)
   }
 }
 

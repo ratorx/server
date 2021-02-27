@@ -27,10 +27,10 @@ variable "backup_config" {
   sensitive   = true
 }
 
-variable "used_ports" {
+variable "system_ports" {
   type = map(object({
     port : number
     protocol : string
   }))
-  description = "External ports used on the app server"
+  description = "External ports used by the system on the app server"
 }
