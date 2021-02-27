@@ -36,3 +36,12 @@ resource "cloudflare_record" "aaaa" {
   type    = "AAAA"
   value   = hcloud_server.main.ipv6_address
 }
+
+resource "cloudflare_record" "mail_forwarding_spf" {
+  zone_id = var.cloudflare_zone.id
+  name    = var.hostname
+  type    = "TXT"
+  // Assumes that email is configured on the base domain
+  // Uses the base domain's SPF
+  value = "v=spf1 include:${var.cloudflare_zone.name} ?all"
+}

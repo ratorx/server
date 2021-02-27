@@ -29,16 +29,20 @@ module "monitoring" {
 }
 
 module "ansible" {
-  source             = "./provision/ansible"
-  server_a_record    = module.server.a_record
+  source          = "./provision/ansible"
+  server_a_record = module.server.a_record
   backup_config = merge(
     var.backup_host_config,
     { passphrase = var.backup_passphrase },
     { private_key_path = var.ssh_private_key_path }
   )
+  mail_forwarding_config = merge(
+    var.mail_forwarding_host_config,
+    { passphrase = var.mail_forwarding_passphrase }
+  )
   // Only allow non-app ports through the firewall
   // App ports are automatically handled by Docker
-  system_ports      = { for name, port_spec in var.ports: name => port_spec if !lookup(port_spec, "app", false)
+  system_ports = { for name, port_spec in var.ports : name => port_spec if !lookup(port_spec, "app", false) }
 }
 
 resource "cloudflare_record" "aliases" {

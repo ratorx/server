@@ -66,6 +66,20 @@ variable "backup_passphrase" {
   sensitive   = true
 }
 
+variable "mail_forwarding_host_config" {
+  type = object({
+    fqdn     = string
+    username = string
+  })
+  description = "Details for the mail forwarding server"
+}
+
+variable "mail_forwarding_passphrase" {
+  type        = string
+  description = "Passphrase to the mail forwarding server for system notifications"
+  sensitive   = true
+}
+
 variable "compose_env" {
   type        = map(string)
   description = "Extra environment variables to pass to docker compose"

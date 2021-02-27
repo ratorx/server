@@ -27,6 +27,16 @@ variable "backup_config" {
   sensitive   = true
 }
 
+variable "mail_forwarding_config" {
+  type = object({
+    passphrase = string
+    fqdn       = string
+    username   = string
+  })
+  description = "Mail forwarding details for the application server"
+  sensitive   = true
+}
+
 variable "system_ports" {
   type = map(object({
     port : number

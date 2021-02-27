@@ -1,0 +1,1 @@
+{{ mail_forwarding.fqdn }} smtp auth-login tls user={{ mail_forwarding.username }} pass={{ mail_forwarding.passphrase }}
