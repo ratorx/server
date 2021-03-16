@@ -29,21 +29,19 @@ At a high level, it performs the following actions:
 - Configures unattended upgrades for system packages.
 - Configures UFW as the system firewall.
 - Configures automated backups with borgmatic (and restores latest backup if no data found).
-- Sets up exim4 as MTA to notify about server events.
-- Configures Docker
+- Configures nullmailer to forward email via an external SMTP server.
+- Configures Docker.
 
 ### External dependencies
 
-- Server with global DNS name.
+- Server provisioned in the previous step.
 - SSH CA private and public keys.
-- TLS CA private and public keys.
-- Cloudflare API token with Zone:Zone:Read and Zone:DNS:Edit for all zones.
 - Borg backup repository.
 
 ### Hacks, workarounds and manual intervention
 
-- A few packages (certbot* and borgmatic*) in Debian stable are not recent enough for required features. These applications are provisioned from Debian testing.
-- Initial bootstrap of the server uses a different SSH key. This is automated using `make bootstrap` target, but it requires a different command to be run. This is because SSH CA has not been configured yet. A special SSH key is used for this, which lives in the repository. The key is hardcoded because Terraform needs a constant key when provisioning access to the server.
+- borgmatic in Debian stable is not recent enough for required features. These applications are provisioned from Debian testing.
+- Initial bootstrap of the server uses a different SSH key. This is automated using `make bootstrap` target, but it requires a different command to be run. This is because SSH CA has not been configured yet. A special SSH key is used for this, which lives in the repository. The key is hardcoded because Terraform needs a constant key when provisioning access to the server (TODO: look into managing key with Terraform; tricky bit is getting Ansible to use the key).
 - Setting up access to the backup host is tricky, since it doesn't have Python, a shell or SSH CA support. Instead, raw scp commands are used to update the authorized_keys. App servers are only allowed to perform borg operations and only on their own backup repository.
 
 ## Application deployment (`docker-compose.yml`)
