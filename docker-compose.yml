@@ -10,6 +10,7 @@ services:
       - /data/syncthing:/var/syncthing:rw
     depends_on:
       - caddy
+    command: -logflags=0
   
   gh:
     build: ./apps/gh

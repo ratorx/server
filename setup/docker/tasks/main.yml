@@ -32,3 +32,14 @@
     name: docker
     state: started
     enabled: true
+
+- name: setup docker config directory
+  file:
+    path: /etc/docker
+    state: directory
+
+- name: setup docker
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+  notify: restart docker

@@ -57,6 +57,7 @@ func logRequests(h http.Handler) http.Handler {
 }
 
 func main() {
+	log.SetFlags(0)
 	srv := &http.Server{
 		Addr: ":8080",
 		ReadTimeout:       1 * time.Second,
