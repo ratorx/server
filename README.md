@@ -50,7 +50,6 @@ The goal of `apps.yml` is to deploy applications on the remote Docker daemon usi
 
 The current deployed applications are:
 
-- Mumble server
 - Syncthing
 - Caddy
 - Custom redirector to download the latest GitHub release of an artifact

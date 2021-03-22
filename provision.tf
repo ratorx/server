@@ -62,36 +62,3 @@ module "compose" {
   app_ports            = { for name, port_spec in var.ports : name => port_spec if lookup(port_spec, "app", false) }
   extra_env            = var.compose_env
 }
-
-# application-specific
-resource "cloudflare_record" "mumble_srv_main" {
-  zone_id = local.cloudflare_zone.id
-  name    = "_mumble._tcp.mumble"
-  type    = "SRV"
-
-  data = {
-    service  = "_mumble"
-    proto    = "_tcp"
-    name     = "mumble"
-    priority = 0
-    weight   = 1
-    port     = var.ports.murmur.port
-    target   = module.server.a_record.hostname
-  }
-}
-
-resource "cloudflare_record" "mumble_srv_legacy" {
-  zone_id = local.cloudflare_zone.id
-  name    = "_mumble._tcp.${var.hostname}"
-  type    = "SRV"
-
-  data = {
-    service  = "_mumble"
-    proto    = "_tcp"
-    name     = var.hostname
-    priority = 0
-    weight   = 1
-    port     = var.ports.murmur.port
-    target   = module.server.a_record.hostname
-  }
-}

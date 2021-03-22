@@ -1,16 +1,5 @@
 version: "3"
 services:
-  murmur:
-    build: ./apps/murmur
-    restart: unless-stopped
-    ports:
-      - "${MURMUR_UDP_PORT:?}:64738/udp"
-    volumes:
-      - murmur_cache:/data/cache:rw
-      - /data/murmur:/data/db:rw
-    depends:
-      - caddy
-
   syncthing:
     image: syncthing/syncthing:latest
     restart: unless-stopped

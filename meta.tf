@@ -106,17 +106,6 @@ variable "ports" {
       port     = 68
       protocol = "udp"
     }
-    murmur = {
-      port      = 1337
-      protocol  = "tcp"
-      monitored = true
-      app       = true
-    }
-    murmur_udp = {
-      port     = 1337
-      protocol = "udp"
-      app      = true
-    }
     syncthing = {
       port      = 22000
       protocol  = "tcp"
@@ -145,7 +134,7 @@ variable "ports" {
 
 variable "domain_aliases" {
   type    = set(string)
-  default = ["gh", "mumble"]
+  default = ["gh"]
 }
 
 # TODO: Pass in status CNAME to domain aliases
