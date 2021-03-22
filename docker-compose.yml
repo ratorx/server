@@ -8,6 +8,8 @@ services:
     volumes:
       - murmur_cache:/data/cache:rw
       - /data/murmur:/data/db:rw
+    depends:
+      - caddy
 
   syncthing:
     image: syncthing/syncthing:latest
@@ -17,10 +19,14 @@ services:
       - "${SYNCTHING_DISCOVERY_PORT:?}:21027/udp"
     volumes:
       - /data/syncthing:/var/syncthing:rw
+    depends_on:
+      - caddy
   
   gh:
     build: ./apps/gh
     restart: unless-stopped
+    depends_on:
+      - caddy
 
   caddy:
     build: ./apps/caddy
@@ -34,10 +40,6 @@ services:
       - /data/syncthing:/usr/share/caddy:ro
     tmpfs: /config
     env_file: .env
-    depends_on:
-      - gh
-      - murmur
-      - syncthing
 volumes:
   caddy_cache:
   murmur_cache:
