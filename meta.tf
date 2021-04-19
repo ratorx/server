@@ -102,10 +102,6 @@ variable "ports" {
       protocol  = "tcp"
       monitored = true
     }
-    dhclient = {
-      port     = 68
-      protocol = "udp"
-    }
     syncthing = {
       port      = 22000
       protocol  = "tcp"
