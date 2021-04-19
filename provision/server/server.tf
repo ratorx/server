@@ -4,11 +4,11 @@ resource "hcloud_ssh_key" "temp" {
 }
 
 resource "hcloud_server" "main" {
-  name        = var.hostname
-  server_type = "cpx11"
-  image       = "debian-10"
-  location    = "nbg1"
-  ssh_keys    = [hcloud_ssh_key.temp.id]
+  name         = var.hostname
+  server_type  = "cpx11"
+  image        = "debian-10"
+  location     = "nbg1"
+  ssh_keys     = [hcloud_ssh_key.temp.id]
   firewall_ids = [hcloud_firewall.main_firewall.id]
 }
 
