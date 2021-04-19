@@ -36,11 +36,3 @@ variable "mail_forwarding_config" {
   description = "Mail forwarding details for the application server"
   sensitive   = true
 }
-
-variable "system_ports" {
-  type = map(object({
-    port : number
-    protocol : string
-  }))
-  description = "External ports used by the system on the app server"
-}

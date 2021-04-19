@@ -14,7 +14,7 @@ The goal of `provision.tf` is to create the server and the infrastructure around
 
 Currently it manages:
 
-- Creating the server on Hetzner Cloud.
+- Creating the server and firewall on Hetzner Cloud.
 - Creating DNS records on Cloudflare.
 - Configuring monitoring on Uptimerobot.
 
@@ -27,7 +27,6 @@ At a high level, it performs the following actions:
 - Configures a trusted SSH CA and signs the host keys with it for bidirectional authentication.
 - Secures SSH access (no passwords; no root access).
 - Configures unattended upgrades for system packages.
-- Configures UFW as the system firewall.
 - Configures automated backups with borgmatic (and restores latest backup if no data found).
 - Configures nullmailer to forward email via an external SMTP server.
 - Configures Docker.

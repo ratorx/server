@@ -6,14 +6,12 @@
     ssh_ca_public_key_path: "{{ ssh_ca_private_key_path }}.pub"
     domain: "{{ '.'.join(inventory_hostname.split('.')[-2:]) }}"
     server_email: "server+{{ inventory_hostname_short }}@{{ domain }}"
-    ufw_ports: "{{ ufw_ports_json | from_json }}"
     mail_forwarding: "{{ mail_forwarding_json | from_json }}"
   roles:
     # Basic system configuration
     - create_ansible_user
     - setup_automatic_updates
     - increase_max_user_watches
-    - ufw
     # Backups
     - borgmatic
     # Server authentication

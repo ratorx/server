@@ -41,9 +41,6 @@ module "ansible" {
     var.mail_forwarding_host_config,
     { passphrase = var.mail_forwarding_passphrase }
   )
-  // Only allow non-app ports through the firewall
-  // App ports are automatically handled by Docker
-  system_ports = { for name, port_spec in var.ports : name => port_spec if !lookup(port_spec, "app", false) }
 }
 
 resource "cloudflare_record" "aliases" {
