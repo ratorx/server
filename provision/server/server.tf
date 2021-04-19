@@ -9,6 +9,7 @@ resource "hcloud_server" "main" {
   image       = "debian-10"
   location    = "nbg1"
   ssh_keys    = [hcloud_ssh_key.temp.id]
+  firewall_ids = [hcloud_firewall.main_firewall.id]
 }
 
 resource "hcloud_rdns" "ipv4" {

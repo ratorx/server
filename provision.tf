@@ -18,6 +18,7 @@ module "server" {
   hostname            = var.hostname
   cloudflare_zone     = local.cloudflare_zone
   ssh_public_key_path = var.ssh_public_key_path
+  firewall_ports      = var.ports
 }
 
 module "monitoring" {

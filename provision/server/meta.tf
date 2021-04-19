@@ -34,6 +34,13 @@ variable "cloudflare_zone" {
   description = "Base Cloudflare zone to create DNS records in"
 }
 
+variable "firewall_ports" {
+  type = map(object({
+    port     = number
+    protocol = string
+  }))
+}
+
 locals {
   fqdn = cloudflare_record.a.hostname
 }
