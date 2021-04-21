@@ -19,13 +19,13 @@ force_up:
 # Setup the server
 # Special method to override the remote user for 1st invocation
 bootstrap:
-	$(ANSIBLE-PLAYBOOK) -e 'ansible_ssh_user=root ansible_private_key_path=./misc/ssh/id_ed25519' setup.yml
+	$(ANSIBLE-PLAYBOOK) -e 'ansible_ssh_user=root ansible_ssh_private_key_file=./misc/ssh/id_ed25519' --tags bootstrap,never setup.yml
 
 setup:
-	$(ANSIBLE-PLAYBOOK) --skip-tags "private_ca" setup.yml
+	$(ANSIBLE-PLAYBOOK) --skip-tags private_ca setup.yml
 
 setup_private_ca:
-	$(ANSIBLE-PLAYBOOK) --tags "private_ca" setup.yml
+	$(ANSIBLE-PLAYBOOK) --tags private_ca setup.yml
 
 interactive_user:
 	$(ANSIBLE-PLAYBOOK) ./misc/interactive_user.yml
