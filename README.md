@@ -6,8 +6,6 @@ There are three main entrypoints:
 - `setup.yml` - An Ansible playbook that configures a freshly provisioned server.
 - `docker-compose.yml` - Docker-compose is used to deploy applications to the server.
 
-The project uses [git-crypt](https://github.com/AGWA/git-crypt) to store secrets.
-
 ## Provisioning infrastructure (`provision.tf`)
 
 The goal of `provision.tf` is to create the server and the infrastructure around it. The configuration variables are located in `terraform.tfvars`. It fetches the host to provision from `inventory.yml`.

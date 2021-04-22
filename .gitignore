@@ -1,3 +1,5 @@
 .pass
 .terraform
 .env
+terraform.tfvars
+misc/ssh/
