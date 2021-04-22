@@ -54,8 +54,9 @@ variable "email" {
 
 variable "backup_host_config" {
   type = object({
-    fqdn     = string
-    username = string
+    fqdn       = string
+    username   = string
+    public_key = string
   })
   description = "Details for the backup server"
 }

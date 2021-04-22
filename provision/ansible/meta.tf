@@ -22,6 +22,7 @@ variable "backup_config" {
     fqdn             = string
     username         = string
     private_key_path = string
+    public_key       = string
   })
   description = "Backup details for the application server"
   sensitive   = true

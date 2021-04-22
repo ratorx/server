@@ -54,6 +54,14 @@
     state: present
   register: root_ssh
 
+- name: add backup host to known_hosts
+  known_hosts:
+    name: "{{ item.inventory_hostname }}"
+    key: "{{ item.inventory_hostname }} {{ backup_public_key }}"
+    path: /root/.ssh/known_hosts
+    state: present
+  loop: "{{ groups['backup'] | map('extract', hostvars) | list }}"
+
 - include_tasks: backup_access.yml
   loop: "{{ groups['backup'] | map('extract', hostvars) | list }}"
 
