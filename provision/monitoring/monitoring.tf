@@ -24,15 +24,15 @@ resource "uptimerobot_monitor" "monitors" {
 
 resource "uptimerobot_status_page" "main" {
   friendly_name = "Status for ${var.server_record.hostname}"
-  custom_domain = "status.${var.server_record.hostname}"
   sort          = "a-z"
   monitors      = concat([uptimerobot_monitor.ping.id], values(uptimerobot_monitor.monitors)[*].id)
   status        = "active"
 }
 
-resource "cloudflare_record" "status_cname" {
+// Keep a pointer to the actual status page in DNS in case the server goes down.
+resource "cloudflare_record" "status_txt" {
   zone_id = var.cloudflare_zone.id
-  name    = "status.${var.server_record.name}"
-  type    = "CNAME"
-  value   = uptimerobot_status_page.main.dns_address
+  name    = "_status.${var.server_record.name}"
+  type    = "TXT"
+  value   = uptimerobot_status_page.main.standard_url
 }

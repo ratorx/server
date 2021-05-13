@@ -58,5 +58,5 @@ module "compose" {
   server_record        = module.server.a_record
   domain_alias_records = values(cloudflare_record.aliases)
   app_ports            = { for name, port_spec in var.ports : name => port_spec if lookup(port_spec, "app", false) }
-  extra_env            = var.compose_env
+  extra_env            = merge(var.compose_env, {"status_page_url": module.monitoring.status_page_url})
 }

@@ -37,7 +37,7 @@ variable "cloudflare_zone" {
   description = "Base Cloudflare zone to create DNS records in"
 }
 
-output "status_page" {
-  description = "DNS record of the Uptime Robot status page"
-  value       = cloudflare_record.status_cname
+output "status_page_url" {
+  description = "URL to the Uptime Robot status page"
+  value   = uptimerobot_status_page.main.standard_url
 }

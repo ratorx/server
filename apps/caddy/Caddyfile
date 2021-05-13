@@ -32,7 +32,7 @@ https://{$MAIN_DOMAIN} {
 	}
 	import auth @notstatus
 
-	redir /status https://status.{host}
+	redir /status {$STATUS_PAGE_URL}
 
 	# Syncthing Admin UI
 	import app syncthing syncthing:8384
