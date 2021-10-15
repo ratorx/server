@@ -38,6 +38,8 @@
     path: /etc/docker
     state: directory
 
+# The metrics server IP is hardcoded to be the gateway IP for the docker0 bridge.
+# TODO: Is scraping Docker with prometheus needed? Are all the metrics fetchable from cadvisor?
 - name: setup docker
   copy:
     src: daemon.json

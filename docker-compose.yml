@@ -11,7 +11,7 @@ services:
     depends_on:
       - caddy
     command: -logflags=0
-  
+
   gh:
     build: ./apps/gh
     restart: unless-stopped
@@ -29,5 +29,23 @@ services:
       - /data/syncthing:/usr/share/caddy:ro
     tmpfs: /config
     env_file: .env
+
+  # Monitoring
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.37.5
+    command: --docker_only=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+
+  prometheus:
+    build: ./apps/prometheus
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - /data/prometheus:/prometheus:rw
+
 volumes:
   caddy_cache:

@@ -57,6 +57,16 @@ https://{$GH_DOMAIN_ALIAS} {
 	reverse_proxy * gh:8080
 }
 
+https://{$PROMETHEUS_DOMAIN_ALIAS} {
+	import log
+	import auth *
+	reverse_proxy * prometheus:9090
+}
+
+:9090 {
+	metrics /metrics
+}
+
 http:// {
 	redir https://{host}{uri} permanent
 }
