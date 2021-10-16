@@ -14,14 +14,6 @@
 	}
 }
 
-(app) {
-	# Add trailing slash to all backend communication
-	redir /app/{args.0} /app/{args.0}/
-	handle_path /app/{args.0}/* {
-		reverse_proxy {args.1}
-	}
-}
-
 https://{$MAIN_DOMAIN} {
 	import log
 	encode gzip
@@ -33,9 +25,6 @@ https://{$MAIN_DOMAIN} {
 	import auth @notstatus
 
 	redir /status {$STATUS_PAGE_URL}
-
-	# Syncthing Admin UI
-	import app syncthing syncthing:8384
 
 	root * /usr/share/caddy
 	file_server * browse {
@@ -54,13 +43,19 @@ https://{$MAIN_DOMAIN} {
 https://{$GH_DOMAIN_ALIAS} {
 	import log
 	import gh_shortlink sshca ratorx/sshca
-	reverse_proxy * gh:8080
+	reverse_proxy gh:8080
+}
+
+https://{$SYNCTHING_DOMAIN_ALIAS} {
+	import log
+	import auth *
+	reverse_proxy syncthing:8384
 }
 
 https://{$PROMETHEUS_DOMAIN_ALIAS} {
 	import log
 	import auth *
-	reverse_proxy * prometheus:9090
+	reverse_proxy prometheus:9090
 }
 
 :9090 {

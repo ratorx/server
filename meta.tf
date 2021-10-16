@@ -131,7 +131,7 @@ variable "ports" {
 
 variable "domain_aliases" {
   type    = set(string)
-  default = ["gh", "prometheus"]
+  default = ["gh", "prometheus", "syncthing"]
 }
 
 # TODO: Pass in status CNAME to domain aliases
