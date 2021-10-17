@@ -20,10 +20,16 @@
     server_email: "server+{{ inventory_hostname_short }}@{{ domain }}"
     mail_forwarding: "{{ mail_forwarding_json | from_json }}"
   pre_tasks:
+      # This doesn't work reliably. Effectively, this tests the mtime of
+      # /var/lib/apt/lists, however that depends on (I think) the image creation
+      # time. Changing it to a day makes it work (update_period - 1) /
+      # update_period percent of the time, since auto-upgrades happen daily.
+      # TODO: A better solution might be to move the apt-get update
+      # unconditionally into cloud-init, since it can't be reproducibly done via
+      # Ansible.
     - name: update package cache
       apt:
-        # Update apt cache only if it doesn't exist
-        cache_valid_time: 31536000
+        cache_valid_time: 86400
   roles:
     - setup_automatic_updates
     - increase_max_user_watches

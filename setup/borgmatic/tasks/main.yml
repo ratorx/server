@@ -4,14 +4,6 @@
       - borgmatic
     state: present
 
-- name: update borgmatic to use testing repo
-  apt:
-    pkg:
-      - borgmatic
-    default_release: testing
-    update_cache: true
-    state: latest
-
 - name: create config directory
   file:
     path: "{{ internal_borgmatic_config_directory }}"
